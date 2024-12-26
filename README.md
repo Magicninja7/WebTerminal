@@ -2,7 +2,7 @@
 
 <p align="center"><img src="https://socialify.git.ci/Magicninja7/WebTerminal/image?language=1&amp;owner=1&amp;name=1&amp;stargazers=1&amp;theme=Light" alt="project-image"></p>
 
-<p id="description">This is a web terminal that integrates with your real one. You can create or change directories create files and more!</p>
+<p id="description">This is a web terminal that integrates with your real one. You can create or change directories create files and more! Please note that although this is a website, it closely integrates with your pc, therfore i did not host it as a website. If i did, it wouldnt have all of its current features.</p>
 
 <h2>🚀 Demo</h2>
 
