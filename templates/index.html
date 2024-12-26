@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Terminal</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            font-family: monospace;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        #terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+        }
+        
+        #output {
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+        }
+        
+        #input-line {
+            display: flex;
+            align-items: center;
+        }
+        
+        #prompt {
+            color: #00ff00;
+            margin-right: 10px;
+        }
+        
+        #command-input {
+            background-color: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: monospace;
+            font-size: 16px;
+            flex-grow: 1;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <div id="output"></div>
+        <div id="input-line">
+            <span id="prompt">$</span>
+            <input type="text" id="command-input" autofocus>
+        </div>
+    </div>
+
+    <script>
+        const commandInput = document.getElementById('command-input');
+        const output = document.getElementById('output');
+        const commandHistory = [];
+        let historyIndex = -1;
+
+        commandInput.addEventListener('keydown', async function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const command = this.value;
+                
+                // Add command to output
+                output.innerHTML += `<div><span style="color: #00ff00;">$</span> ${command}</div>`;
+                
+                // Add to history
+                commandHistory.push(command);
+                historyIndex = commandHistory.length;
+                
+                // Clear input
+                this.value = '';
+                
+                // Send command to server
+                try {
+                    const response = await fetch('/execute', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ command: command })
+                    });
+                    
+                    const data = await response.text();
+                    output.innerHTML += `<div>${data}</div>`;
+                } catch (error) {
+                    output.innerHTML += `<div style="color: #ff0000;">Error: ${error}</div>`;
+                }
+                
+                // Scroll to bottom
+                output.scrollTop = output.scrollHeight;
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    this.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    this.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    this.value = '';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
